@@ -1,16 +1,17 @@
-package com.many.affection.user.service
+package com.many.affection.board.service
 
-import com.many.affection.user.dto.PostDto
-import com.many.affection.user.entity.Post
-import com.many.affection.user.entity.PostTag
-import com.many.affection.user.entity.Tag
-import com.many.affection.user.repository.PostRepository
-import com.many.affection.user.repository.PostTagRepository
-import com.many.affection.user.repository.TagRepository
+import com.many.affection.board.dto.PostDto
+import com.many.affection.board.entity.Post
+import com.many.affection.board.entity.PostTag
+import com.many.affection.board.entity.Tag
+import com.many.affection.board.repository.PostRepository
+import com.many.affection.board.repository.PostTagRepository
+import com.many.affection.board.repository.TagRepository
 import com.many.affection.user.repository.UserRepository
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 
 @Service
 class PostService(
@@ -106,6 +107,7 @@ class PostService(
 
     fun getPost(id: Long): PostDto.Response {
         val findPost = postRepository.findById(id).orElseGet { throw RuntimeException("User not found!") }
+        findPost.hits = findPost.hits++
         val postTagListByFindPost = findPost.postTagList
         var tagSet: HashSet<String> = hashSetOf()
         postTagListByFindPost?.map { x -> x.tag?.name?.let { tagSet.add(it) } }
@@ -116,6 +118,40 @@ class PostService(
             hits = findPost.hits,
             tagSet = tagSet
         )
+    }
+
+    fun postOrderByHits(): MutableList<PostDto.Response> {
+        var findAllByOrderByHitsDesc = postRepository.findAllByOrderByHitsDesc()
+        var responseList = mutableListOf<PostDto.Response>()
+        findAllByOrderByHitsDesc?.let {
+            for (post in findAllByOrderByHitsDesc) {
+                val tagSet = getStringTagSetByPost(post)
+                responseList.add(
+                    PostDto.Response(
+                        username = post.user.username,
+                        title = post.title,
+                        contents = post.contents,
+                        hits = post.hits,
+                        tagSet = tagSet
+                    )
+                )
+            }
+        }
+        return responseList
+
+    }
+
+    fun getStringTagSetByPost(post: Post): HashSet<String> {
+        val postTagList = post.postTagList
+        var tagSet = hashSetOf<String>()
+
+        postTagList?.let {
+            for (postTag in postTagList) {
+                postTag.tag?.let { it -> tagSet.add(it.name) }
+            }
+        }
+
+        return tagSet
     }
 
 
@@ -129,4 +165,5 @@ class PostService(
         }
         return postTagList
     }
+
 }

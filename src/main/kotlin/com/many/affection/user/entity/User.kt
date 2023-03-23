@@ -1,14 +1,8 @@
 package com.many.affection.user.entity
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.OneToMany
+import com.many.affection.board.entity.Post
+import com.many.affection.group.entity.Group
+import jakarta.persistence.*
 
 @Entity
 class User(
@@ -21,4 +15,7 @@ class User(
 ) : BaseEntity() {
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
     lateinit var postList: MutableList<Post>
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
+    var group: Group? = null
 }
