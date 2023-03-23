@@ -33,4 +33,6 @@ class UserService(
         val findUser = userRepository.findByUsername(username)?: throw RuntimeException("User not found!")
         userRepository.delete(findUser)
     }
+
+
 }
