@@ -1,8 +1,8 @@
-package com.many.affection.user.controller
+package com.many.affection.board.controller
 
+import com.many.affection.board.dto.PostDto
+import com.many.affection.board.service.PostService
 import com.many.affection.config.CustomUserDetails
-import com.many.affection.user.dto.PostDto
-import com.many.affection.user.service.PostService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -40,9 +40,16 @@ class PostController(
         return ResponseEntity.ok(postService.getPost(id))
     }
 
+    @GetMapping("/hits")
+    fun getPost(): ResponseEntity<*> {
+        return ResponseEntity.ok(postService.postOrderByHits())
+    }
+
     fun getUsername(): String {
         val authentication = SecurityContextHolder.getContext().authentication
         val userDetails = authentication.principal as CustomUserDetails
         return userDetails.username
     }
+
+
 }

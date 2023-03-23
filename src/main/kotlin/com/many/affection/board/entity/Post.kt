@@ -1,5 +1,7 @@
-package com.many.affection.user.entity
+package com.many.affection.board.entity
 
+import com.many.affection.user.entity.BaseEntity
+import com.many.affection.user.entity.User
 import jakarta.persistence.*
 
 @Entity

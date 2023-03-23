@@ -1,4 +1,4 @@
-package com.many.affection.user.dto
+package com.many.affection.board.dto
 
 class PostDto {
     data class Request(
