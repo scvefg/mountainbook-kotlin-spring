@@ -18,7 +18,7 @@ class User(
     var id: Long? = null,
     var username: String,
     var password: String,
-): BaseEntity(){
-    @OneToMany(mappedBy = "user",cascade = [CascadeType.REMOVE])
+) : BaseEntity() {
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
     lateinit var postList: MutableList<Post>
 }
