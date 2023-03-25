@@ -10,7 +10,7 @@ class PostDto {
         var username: String,
         var title: String,
         var contents: String,
-        var hits: Long,
+        var views: Long,
         var tagSet: HashSet<String>
     )
 }
