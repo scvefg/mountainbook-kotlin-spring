@@ -24,16 +24,14 @@ class RedisScheduling(
 
         val allPost = postRepository.findAll()
 
-        for (post in allPost) {
-            if (post.id != null) {
-                val key = "${post.id}"
-                post.views = operations.get(key)?:1L
-                postRepository.save(post)
-
+        allPost.map { x ->
+            if (x.id != null) {
+                val key = "${x.id}"
+                x.views = operations.get(key) ?: 1L
             }
         }
 
-
+        postRepository.saveAll(allPost)
     }
 
 
