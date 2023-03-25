@@ -6,10 +6,11 @@ import jakarta.persistence.*
 
 @Entity
 class Post(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
     var contents: String,
     var title: String,
-    var hits: Long,
+    var views: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: User

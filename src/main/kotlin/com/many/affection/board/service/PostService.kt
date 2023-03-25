@@ -9,6 +9,10 @@ import com.many.affection.board.repository.PostTagRepository
 import com.many.affection.board.repository.TagRepository
 import com.many.affection.user.repository.UserRepository
 import mu.KotlinLogging
+import org.springframework.data.redis.core.HashOperations
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.data.redis.core.ValueOperations
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,7 +22,9 @@ class PostService(
     var userRepository: UserRepository,
     var postRepository: PostRepository,
     var tagRepository: TagRepository,
-    var postTagRepository: PostTagRepository
+    var postTagRepository: PostTagRepository,
+    var redisTemplate: RedisTemplate<String, Long>
+
 ) {
 
     var log = KotlinLogging.logger() {}
@@ -37,8 +43,9 @@ class PostService(
         var findUser = userRepository.findByUsername(username) ?: throw RuntimeException("User not found!")
         var entityTagList: MutableList<Tag> = mutableListOf()
         var saveAllTagList: MutableList<Tag>
-        var post = Post(title = request.title, contents = request.contents, hits = 0L, user = findUser)
+        var post = Post(title = request.title, contents = request.contents, views = 0L, user = findUser)
         val savedPost = postRepository.save(post)
+
 
         request.tagList.map { x -> entityTagList.add(Tag(name = x)) }
         saveAllTagList = tagRepository.saveAll(entityTagList)
@@ -75,7 +82,7 @@ class PostService(
             }
         }
 
-        var tags: MutableList<Tag> = mutableListOf()
+
         var deleteList: MutableList<Tag> = mutableListOf()
         if (noDuplicatedPostTagList != null) {
             for (postTag in noDuplicatedPostTagList) {
@@ -105,23 +112,37 @@ class PostService(
         postRepository.delete(findPost)
     }
 
-    fun getPost(id: Long): PostDto.Response {
-        val findPost = postRepository.findById(id).orElseGet { throw RuntimeException("User not found!") }
-        findPost.hits = findPost.hits++
+
+    /**
+     *
+     * TODO
+     * 1. 게시글 조회시 Count++ 후 Cache 저장소에 저장
+     * 2. Scheduler를 통해서 저장된 Cache 데이터를 기반으로 Views save
+     *
+     */
+
+    fun getPost(postId: Long): PostDto.Response {
+        val findPost = postRepository.findById(postId).orElseGet { throw RuntimeException("User not found!") }
         val postTagListByFindPost = findPost.postTagList
-        var tagSet: HashSet<String> = hashSetOf()
+        val tagSet: HashSet<String> = hashSetOf()
+
         postTagListByFindPost?.map { x -> x.tag?.name?.let { tagSet.add(it) } }
+
+        val operations: ValueOperations<String, Long> = redisTemplate.opsForValue()
+
+
+        operations.increment("${findPost.id}", 1L)
         return PostDto.Response(
             username = findPost.user.username,
             title = findPost.title,
             contents = findPost.contents,
-            hits = findPost.hits,
+            views = findPost.views,
             tagSet = tagSet
         )
     }
 
     fun postOrderByHits(): MutableList<PostDto.Response> {
-        var findAllByOrderByHitsDesc = postRepository.findAllByOrderByHitsDesc()
+        var findAllByOrderByHitsDesc = postRepository.findAllByOrderByViewsDesc()
         var responseList = mutableListOf<PostDto.Response>()
         findAllByOrderByHitsDesc?.let {
             for (post in findAllByOrderByHitsDesc) {
@@ -131,7 +152,7 @@ class PostService(
                         username = post.user.username,
                         title = post.title,
                         contents = post.contents,
-                        hits = post.hits,
+                        views = post.views,
                         tagSet = tagSet
                     )
                 )
@@ -165,5 +186,4 @@ class PostService(
         }
         return postTagList
     }
-
 }
