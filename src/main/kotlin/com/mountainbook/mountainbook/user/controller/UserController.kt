@@ -26,8 +26,8 @@ class UserController(
 
     ) {
     @PostMapping
-    fun createUser(@RequestBody signUpDto: UserDto): ResponseEntity<*> {
-        return ResponseEntity.ok(userService.signUp(signUpDto))
+    fun createUser(@RequestBody joinDto: UserDto.JoinDto): ResponseEntity<*> {
+        return ResponseEntity.ok(userService.signUp(joinDto))
     }
 
     @DeleteMapping
@@ -45,5 +45,10 @@ class UserController(
         val authentication = SecurityContextHolder.getContext().authentication
         val userDetails = authentication.principal as CustomUserDetails
         return userDetails.username
+    }
+
+    @PutMapping("/status-message")
+    fun setStatusMessage(@RequestBody statusMessageDto: UserDto.StatusDto): ResponseEntity<*>{
+        return ResponseEntity.ok(userService.setStatusMessage(getUsername(), statusMessageDto))
     }
 }

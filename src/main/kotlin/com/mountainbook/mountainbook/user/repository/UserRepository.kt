@@ -1,4 +1,4 @@
-package com.mountainbook.mountainbook.user.service.repository
+package com.mountainbook.mountainbook.user.repository
 
 import com.mountainbook.mountainbook.user.entity.User
 import org.springframework.data.jpa.repository.JpaRepository

@@ -2,7 +2,7 @@ package com.mountainbook.mountainbook.user.service
 
 import com.mountainbook.mountainbook.user.dto.MailDto
 import com.mountainbook.mountainbook.user.entity.User
-import com.mountainbook.mountainbook.user.service.repository.UserRepository
+import com.mountainbook.mountainbook.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender

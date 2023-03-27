@@ -3,7 +3,7 @@ package com.mountainbook.mountainbook.user.service
 import com.mountainbook.mountainbook.user.dto.MailDto
 import com.mountainbook.mountainbook.user.dto.UserDto
 import com.mountainbook.mountainbook.user.entity.User
-import com.mountainbook.mountainbook.user.service.repository.UserRepository
+import com.mountainbook.mountainbook.user.repository.UserRepository
 import com.mountainbook.mountainbook.user.type.UserStatus
 import mu.KotlinLogging
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -21,7 +21,7 @@ class UserService(
     var log = KotlinLogging.logger(){}
 
     @Transactional
-    fun signUp(userDto: UserDto) {
+    fun signUp(userDto: UserDto.JoinDto) {
         val findUser = userRepository.findByUsername(userDto.username)
         findUser?.let { throw RuntimeException("Duplicated user!") }
         var savedUser = userRepository.save(
@@ -45,7 +45,7 @@ class UserService(
 
     }
 
-    fun login(loginDto: UserDto) {
+    fun login(loginDto: UserDto.LoginDto) {
         var user = userRepository.findByUsername(loginDto.username) ?: throw RuntimeException("User not found!")
         if (!passwordEncoder.matches(loginDto.password, user.password)) throw RuntimeException("Not equal password!")
     }
@@ -64,5 +64,9 @@ class UserService(
         }
     }
 
-
+    @Transactional
+    fun setStatusMessage(username: String, statusMessageDto: UserDto.StatusDto) {
+        var user = userRepository.findByUsername(username) ?: throw RuntimeException("User not found!")
+        user.statusMessage = statusMessageDto.statusMessage
+    }
 }

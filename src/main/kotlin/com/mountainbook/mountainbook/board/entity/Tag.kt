@@ -8,7 +8,6 @@ class Tag(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-    @Column(unique = true)
     var name: String
 ) : BaseEntity() {
     @OneToMany(mappedBy = "tag")

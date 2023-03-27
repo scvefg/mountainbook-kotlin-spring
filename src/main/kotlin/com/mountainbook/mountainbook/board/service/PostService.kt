@@ -7,7 +7,7 @@ import com.mountainbook.mountainbook.board.entity.Tag
 import com.mountainbook.mountainbook.board.repository.PostRepository
 import com.mountainbook.mountainbook.board.repository.PostTagRepository
 import com.mountainbook.mountainbook.board.repository.TagRepository
-import com.mountainbook.mountainbook.user.service.repository.UserRepository
+import com.mountainbook.mountainbook.user.repository.UserRepository
 import mu.KotlinLogging
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.ValueOperations

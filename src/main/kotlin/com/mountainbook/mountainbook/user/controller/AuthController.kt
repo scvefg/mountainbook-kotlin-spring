@@ -1,9 +1,10 @@
 package com.mountainbook.mountainbook.user.controller
 
 import com.mountainbook.mountainbook.config.TokenProvider
-import com.mountainbook.mountainbook.user.dto.TokenDto
 import com.mountainbook.mountainbook.user.dto.UserDto
 import com.mountainbook.mountainbook.user.service.UserService
+import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -22,7 +23,7 @@ class AuthController(
 ) {
 
     @PostMapping("/login")
-    fun login(@RequestBody loginDto: UserDto): ResponseEntity<*> {
+    fun login(@RequestBody loginDto: UserDto.LoginDto): ResponseEntity<*> {
         userService.login(loginDto)
         var authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
@@ -31,11 +32,15 @@ class AuthController(
             )
         )
         SecurityContextHolder.getContext().authentication = authentication
-        return ResponseEntity.ok(TokenDto(tokenProvider.createToken(loginDto.username)))
+        return ResponseEntity.ok(UserDto.TokenDto(tokenProvider.createToken(loginDto.username)))
     }
 
     @PostMapping("/logout")
-    fun logout(@RequestBody token: String): ResponseEntity<*>{
-        return ResponseEntity.ok(tokenProvider.setTokenExpirationPastValue(token))
+    fun logout(request: HttpServletRequest): ResponseEntity<*> {
+
+        var token = request.getHeader("Authorization")
+        if(token.startsWith("Bearer ")) token = token.substring(7)
+
+        return ResponseEntity.ok(UserDto.TokenDto(tokenProvider.setTokenExpirationPastValue(token)))
     }
 }

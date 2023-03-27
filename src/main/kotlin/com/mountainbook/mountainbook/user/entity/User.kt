@@ -16,9 +16,12 @@ class User(
     @Column(name = "user_id")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     var id: UUID? = null,
+    @Column(unique = true)
     var username: String,
     var password: String,
+    @Column(unique = true)
     var nickname: String,
+    @Column(unique = true)
     var email: String,
     var birth: LocalDate,
 
@@ -26,6 +29,8 @@ class User(
     var status: UserStatus
 
 ) : BaseEntity() {
+    lateinit var statusMessage: String
+
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
     lateinit var postList: MutableList<Post>
 
