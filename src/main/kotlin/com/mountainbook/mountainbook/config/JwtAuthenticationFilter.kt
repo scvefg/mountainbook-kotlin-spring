@@ -27,8 +27,11 @@ class JwtAuthenticationFilter(
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                 }
+            } else {
+                throw RuntimeException("Token is invalid!")
             }
         }
+
         filterChain.doFilter(request, response)
     }
 }

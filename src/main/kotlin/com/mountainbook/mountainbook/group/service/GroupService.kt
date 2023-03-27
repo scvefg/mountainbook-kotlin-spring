@@ -3,7 +3,7 @@ package com.mountainbook.mountainbook.group.service
 import com.mountainbook.mountainbook.group.dto.GroupDto
 import com.mountainbook.mountainbook.group.entity.Group
 import com.mountainbook.mountainbook.group.repository.GroupRepository
-import com.mountainbook.mountainbook.user.service.repository.UserRepository
+import com.mountainbook.mountainbook.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.format.DateTimeFormatter

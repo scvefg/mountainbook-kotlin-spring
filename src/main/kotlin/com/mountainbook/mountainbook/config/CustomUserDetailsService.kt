@@ -1,6 +1,6 @@
 package com.mountainbook.mountainbook.config
 
-import com.mountainbook.mountainbook.user.service.repository.UserRepository
+import com.mountainbook.mountainbook.user.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service

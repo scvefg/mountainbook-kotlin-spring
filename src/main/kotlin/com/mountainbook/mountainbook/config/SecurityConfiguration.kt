@@ -27,16 +27,15 @@ class SecurityConfiguration(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf().disable()
-
-        http.authorizeHttpRequests()
-            .requestMatchers("/user", "/auth/login", "/user/mail/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
+        http
+//        authorizeHttpRequests()
+//            .requestMatchers("/","/user", "/auth/login", "/user/mail/**", "/image/**", "/profile-image/**").permitAll()
+//            .anyRequest().authenticated()
+//            .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilterBefore(JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter::class.java)
-
 
         return http.build()
     }

@@ -4,6 +4,8 @@ plugins {
     id("org.springframework.boot") version "3.0.4"
     id("io.spring.dependency-management") version "1.1.0"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.7.22"
+    id ("com.ewerk.gradle.plugins.querydsl") version "1.0.10"
+
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
@@ -27,6 +29,8 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:1.12.0")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("com.querydsl:querydsl-jpa")
+
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
@@ -51,7 +55,3 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-//noArg {
-//    annotation("com.my.Annotation")
-//    invokeInitializers = true
-//}
