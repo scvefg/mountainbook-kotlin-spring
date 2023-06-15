@@ -1,4 +1,4 @@
-# [MSA 프로젝트] REST API
+REST API
 
 **도메인**
 
